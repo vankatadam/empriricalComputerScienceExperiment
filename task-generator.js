@@ -4,7 +4,7 @@ var seedrandom = require("seedrandom");
 const { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } = require("constants");
 
 //seeds the outcome
-seedrandom("seed4", { global: true });
+seedrandom("seed6", { global: true });
 
 const einleitungHTMLAuto = `In der ersten Aufgabe werden Sie die Funktion Autocomplete verwenden dürfen.
                     Um sich mit dieser Funktion bekannt zu machen, gehen Sie bitte das folgende Einleitungsscenario durch:
@@ -36,27 +36,30 @@ const einleitungHTMLnoAuto = `Diese Aufgabe ist gleich wie die vorherige Aufgabe
                     dies ohne Autocomplete Funktion, indem sie die Datei in einem gängingen Editor ohne diese Funktion aufrufen.`;
 
 //read tags etc. and write to files
-fs.readFile("allHtmlTags.csv", function (err, fileData) {
-  //reading out the html tags
-  parse(
-    fileData,
-    { columns: false, trim: true },
-    function (err, htmlTagsArray) {
-      //generate task 1 (HTML)
-      fs.writeFile(
-        "task.html",
-        generateHTMLTask(einleitungHTMLAuto, htmlTagsArray, true),
-        () => {
-          console.log("task.html generated");
-        }
-      );
-      fs.writeFile(
-        "task.txt",
-        generateHTMLTask(einleitungHTMLnoAuto, htmlTagsArray, false),
-        () => {
-          console.log("task.txt generated");
-        }
-      );
+// console.log(process.cwd());
+var fileData = fs.readFileSync("allHTMLTags.CSV", "utf8");
+//reading out the html tags
+// console.log("readFile");
+// console.log(fileData);
+// console.log(err);
+// console.log("process ", process.cwd());
+
+parse(fileData, { columns: false, trim: true }, function (err, htmlTagsArray) {
+  //generate task 1 (HTML)
+  // console.log("callback");
+
+  fs.writeFile(
+    "task.html",
+    generateHTMLTask(einleitungHTMLAuto, htmlTagsArray, true),
+    () => {
+      console.log("task.html generated");
+    }
+  );
+  fs.writeFile(
+    "task.txt",
+    generateHTMLTask(einleitungHTMLnoAuto, htmlTagsArray, false),
+    () => {
+      console.log("task.txt generated");
     }
   );
 });
@@ -104,7 +107,11 @@ const generateHTMLTask = (einleitung, htmlTags, autocomplete) => {
   var fakedNames = "";
   for (var i = 0; i < htmlTags.length; i++) {
     fakedNames = fakedNames.concat(htmlTags[i] + " ");
-    fakedNames = fakedNames.concat(htmlTags[i] + "a ");
+    fakedNames = fakedNames.concat(htmlTags[i].toString().slice(0, 3) + "AAT ");
+    fakedNames = fakedNames.concat(htmlTags[i].toString().slice(0, 2) + "ART ");
+    fakedNames = fakedNames + htmlTags[i].toString().slice(0, 1) + "BRT ";
+
+    fakedNames = fakedNames.concat(htmlTags[i] + "A ");
     // task = task.concat("a" + htmlTags[i] + " ");
     // task = task.concat("b" + htmlTags[i] + " ");
   }
